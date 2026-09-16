@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('post_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('parent_id')->nullable()
+                ->constrained('comments')->cascadeOnDelete();
+            $table->text('content');
+            $table->boolean('is_approved')->default(false);
+            $table->timestamp('approved_at')->nullable();
             $table->timestamps();
+
+            $table->index(['is_approved', 'approved_at', 'parent_id']);
         });
     }
 
